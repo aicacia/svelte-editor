@@ -39,6 +39,25 @@
 		{
 			type: 'paragraph',
 			children: [{ text: 'Try it out for yourself!' }]
+		},
+		{
+			type: 'check-list-item',
+			checked: true,
+			children: [{ text: 'Checked list item' }]
+		},
+		{
+			type: 'check-list-item',
+			checked: false,
+			children: [{ text: 'Todo' }]
+		},
+		{
+			type: 'code',
+			language: 'js',
+			children: [
+				{
+					text: 'const fac = (x) => x > 1 ? x * fac(x - 1) : 1;'
+				}
+			]
 		}
 	];
 </script>

@@ -3,7 +3,7 @@
 	export let onClick: (event: MouseEvent) => void;
 </script>
 
-<button class:active on:mousedown={onClick}>
+<button class={$$restProps.class} class:active on:mousedown={onClick}>
 	<div>
 		<slot />
 	</div>

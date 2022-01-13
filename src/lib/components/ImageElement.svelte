@@ -1,10 +1,82 @@
+<script lang="ts" context="module">
+	import type { IBaseElement } from './Element.svelte';
+
+	export interface IImageElement extends IBaseElement {
+		type: 'image';
+		url: string;
+	}
+
+	export function isImageElement(element: IBaseElement): element is IImageElement {
+		return element.type === 'image';
+	}
+
+	export function withImages<T extends SvelteEditor = SvelteEditor>(editor: T): T {
+		const { insertData, isVoid } = editor;
+
+		editor.isVoid = (element) => {
+			return element['type'] === 'image' ? true : isVoid(element);
+		};
+
+		editor.insertData = (data) => {
+			const text = data.getData('text/plain');
+			const { files } = data;
+
+			if (files && files.length > 0) {
+				for (let i = 0; i < files.length; i++) {
+					const file = files[i];
+					const reader = new FileReader();
+					const [mime] = file.type.split('/');
+
+					if (mime === 'image') {
+						reader.addEventListener('load', () => {
+							const url = reader.result;
+							insertImage(editor, url);
+						});
+
+						reader.readAsDataURL(file);
+					}
+				}
+			} else if (isImageUrl(text)) {
+				insertImage(editor, text);
+			} else {
+				insertData(data);
+			}
+		};
+
+		return editor;
+	}
+
+	export function insertImage(editor: Editor, url: string | ArrayBuffer) {
+		const text = { text: '' };
+		const image = { type: 'image', url, children: [text] };
+		Transforms.insertNodes(editor, image);
+	}
+
+	export function isImageUrl(url: string): boolean {
+		if (!url) {
+			return false;
+		}
+		if (!isUrl(url)) {
+			return false;
+		}
+		const ext = new URL(url).pathname.split('.').pop();
+		return imageExtensions.includes(ext);
+	}
+</script>
+
 <script lang="ts">
-	import { findPath, getFocusedContext, getSelectedContext } from 'svelte-slate/src/lib';
-	import type { SvelteEditor } from 'svelte-slate/src/lib';
-	import { Transforms } from 'slate';
+	import {
+		findPath,
+		getFocusedContext,
+		getReadOnlyContext,
+		getSelectedContext
+	} from 'svelte-slate';
+	import type { SvelteEditor } from 'svelte-slate';
+	import { Editor, Transforms } from 'slate';
 	import { Button } from '$lib';
 	import MdDelete from 'svelte-icons/md/MdDelete.svelte';
-	import type { IImageElement } from './Element.svelte';
+	import isUrl from 'is-url';
+	import imageExtensions from 'image-extensions';
 
 	export let editor: SvelteEditor;
 	export let element: IImageElement;
@@ -12,8 +84,9 @@
 
 	const selectedContext = getSelectedContext();
 	const focusedContext = getFocusedContext();
+	const readOnlyContext = getReadOnlyContext();
 
-	$: selected = $selectedContext && $focusedContext;
+	$: selected = $readOnlyContext ? false : $selectedContext && $focusedContext;
 	$: path = findPath(element);
 	$: onRemove = () => Transforms.removeNodes(editor, { at: path });
 </script>
@@ -43,6 +116,7 @@
 	}
 
 	.delete {
+		display: none;
 		position: absolute;
 		top: 0.5em;
 		left: 0.5em;

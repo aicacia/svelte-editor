@@ -8,19 +8,19 @@
 </script>
 
 <script lang="ts">
-	import { Slate, Editable, withSvelte } from 'svelte-slate/src/lib';
+	import { Slate, Editable, withSvelte } from 'svelte-slate';
 	import type { Selection } from 'slate';
 	import { createEditor } from 'slate';
 	import { withHistory } from 'slate-history';
-	import { toggleMark, withImages } from '../utils';
+	import { toggleMark } from '../utils';
 	import type { IElement } from './Element.svelte';
 	import Element from './Element.svelte';
 	import type { IText } from './Leaf.svelte';
 	import Leaf from './Leaf.svelte';
 	import isHotkey from 'is-hotkey';
 	import HoveringToolbar from './HoveringToolbar.svelte';
-	import { onMount } from 'svelte';
 	import { longpress } from '$lib/longpress';
+	import { withImages } from './ImageElement.svelte';
 
 	export let value: Array<IText | IElement> = [
 		{
@@ -29,8 +29,10 @@
 		}
 	];
 	export let selection: Selection | null = null;
+	export let readOnly = false;
+	export let placeholder = 'Type...';
 
-	let state = { open: false };
+	let open = false;
 	let ref: HTMLDivElement;
 	const editor = withHistory(withImages(withSvelte(createEditor())));
 
@@ -44,23 +46,14 @@
 		}
 	}
 
-	onMount(() => {
-		const lp = longpress(ref, 300);
-
-		function onLongPress() {
-			state.open = true;
-		}
-
-		ref.addEventListener('longpress', onLongPress);
-
-		return () => {
-			lp.destroy();
-			ref.removeEventListener('longpress', onLongPress);
-		};
-	});
+	function onLongPress() {
+		open = true;
+	}
 </script>
 
 <Slate {editor} bind:selection bind:value>
-	<HoveringToolbar container={ref} open={state.open} />
-	<Editable bind:ref {Element} {Leaf} {onKeyDown} placeholder="Type..." />
+	<HoveringToolbar container={ref} bind:open />
+	<div use:longpress on:longpress={onLongPress}>
+		<Editable bind:ref {readOnly} {Element} {Leaf} {onKeyDown} {placeholder} />
+	</div>
 </Slate>

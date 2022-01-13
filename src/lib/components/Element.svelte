@@ -1,27 +1,23 @@
 <script lang="ts" context="module">
 	import type { IText } from './Leaf.svelte';
+	import type { IImageElement } from './ImageElement.svelte';
 
 	export interface IBaseElement {
 		type: string;
 		children: (IElement | IText)[];
 	}
-	export interface IImageElement extends IBaseElement {
-		type: 'image';
-		url: string;
-	}
 
-	export type IElement = IBaseElement | IImageElement;
-
-	function isImageElement(element: IBaseElement): element is IImageElement {
-		return element.type === 'image';
-	}
+	export type IElement = IBaseElement | IImageElement | ICheckListItemElement | ICodeElement;
 </script>
 
 <script lang="ts">
-	import type { SvelteEditor } from 'svelte-slate/src/lib';
+	import { isImageElement } from './ImageElement.svelte';
 	import ImageElement from './ImageElement.svelte';
+	import type { ICheckListItemElement } from './CheckListItemElement.svelte';
+	import CheckListItemElement, { isCheckListItemElement } from './CheckListItemElement.svelte';
+	import type { ICodeElement } from './CodeElement.svelte';
+	import CodeElement, { isCodeElement } from './CodeElement.svelte';
 
-	export let editor: SvelteEditor;
 	export let element: IElement;
 	export let ref: HTMLElement = undefined;
 </script>
@@ -38,8 +34,14 @@
 		<slot />
 	</li>{:else if element?.type === 'numbered-list'}<ol bind:this={ref} {...$$restProps}>
 		<slot />
-	</ol>{:else if isImageElement(element)}<ImageElement bind:ref {...$$restProps} {editor} {element}
+	</ol>{:else if isImageElement(element)}<ImageElement bind:ref {...$$restProps} {element}
 		><slot /></ImageElement
+	>{:else if isCheckListItemElement(element)}<CheckListItemElement
+		bind:ref
+		{...$$restProps}
+		{element}><slot /></CheckListItemElement
+	>{:else if isCodeElement(element)}<CodeElement bind:ref {...$$restProps} {element}
+		><slot /></CodeElement
 	>{:else}<p bind:this={ref} {...$$restProps}><slot /></p>{/if}
 
 <style>

@@ -11,6 +11,8 @@
 	import BlockButton from './BlockButton.svelte';
 	import MarkButton from './MarkButton.svelte';
 	import ImageButton from './ImageButton.svelte';
+	import CheckListItemButton from './CheckListItemButton.svelte';
+	import CodeButton from './CodeButton.svelte';
 </script>
 
 <MarkButton format="bold"><MdFormatBold /></MarkButton>
@@ -23,3 +25,5 @@
 <BlockButton format="numbered-list"><MdFormatListNumbered /></BlockButton>
 <BlockButton format="bulleted-list"><MdFormatListBulleted /></BlockButton>
 <ImageButton />
+<CheckListItemButton />
+<CodeButton />

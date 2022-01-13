@@ -1,8 +1,15 @@
 {
 	"name": "@aicacia/svelte-editor",
 	"version": "0.1.0",
+	"description": "aicacia svelte rich text editor",
 	"license": "(MIT OR Apache-2.0)",
 	"type": "module",
+	"keywords": [
+		"svelte",
+		"rich",
+		"text",
+		"editor"
+	],
 	"scripts": {
 		"start": "svelte-kit dev",
 		"build": "svelte-kit build",
@@ -19,6 +26,7 @@
 		"@sveltejs/adapter-static": "next",
 		"@sveltejs/kit": "next",
 		"@types/is-hotkey": "0",
+		"@types/prismjs": "1",
 		"@typescript-eslint/eslint-plugin": "5",
 		"@typescript-eslint/parser": "5",
 		"eslint": "8",
@@ -39,14 +47,16 @@
 	"peerDependencies": {
 		"slate": "0.72",
 		"slate-history": "0",
+		"svelte": "3",
 		"svelte-icons": "2",
-		"svelte-slate": "file:../svelte-slate"
+		"svelte-slate": "0.1"
 	},
 	"dependencies": {
-		"image-extensions": "^1.1.0",
-		"is-hotkey": "0",
-		"is-url": "^1.2.4",
-		"svelte-portal": "^2.1.2",
-		"svelte-slate": "file:../svelte-slate"
+		"image-extensions": "1.1",
+		"is-url": "1.2",
+		"prismjs": "1.26",
+		"scroll-into-view-if-needed": "2.2",
+		"svelte-portal": "2.1",
+		"svelte-slate": "0.1"
 	}
 }
