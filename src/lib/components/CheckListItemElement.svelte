@@ -68,13 +68,15 @@
 	import { isBlockActive } from '$lib/utils';
 
 	export let element: ICheckListItemElement;
-	export let ref: HTMLElement = undefined;
+	export let ref: HTMLElement | undefined;
+	export let dir: 'rtl' | 'ltr';
+	export let contenteditable: boolean | undefined;
 
 	const editor = getEditor();
 	const readOnlyContext = getReadOnlyContext();
 
 	$: readOnly = $readOnlyContext;
-	$: onChange = (event: Event) =>
+	function onChange(event: Event) {
 		Transforms.setNodes(
 			editor,
 			{
@@ -82,9 +84,17 @@
 			} as any,
 			{ at: findPath(element) }
 		);
+	}
 </script>
 
-<div {...$$restProps} class="check-list-item" bind:this={ref}>
+<div
+	class="check-list-item"
+	bind:this={ref}
+	data-slate-node="element"
+	data-slate-inline={$$props['data-slate-inline']}
+	{dir}
+	{contenteditable}
+>
 	<span class="checkbox" contenteditable={false}>
 		<input type="checkbox" checked={element.checked} on:change={onChange} />
 	</span>

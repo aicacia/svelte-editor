@@ -14,7 +14,7 @@
 		const { insertData, isVoid } = editor;
 
 		editor.isVoid = (element) => {
-			return element['type'] === 'image' ? true : isVoid(element);
+			return isImageElement(element as IBaseElement) ? true : isVoid(element);
 		};
 
 		editor.insertData = (data) => {
@@ -67,6 +67,7 @@
 <script lang="ts">
 	import {
 		findPath,
+		getEditor,
 		getFocusedContext,
 		getReadOnlyContext,
 		getSelectedContext
@@ -78,22 +79,32 @@
 	import isUrl from 'is-url';
 	import imageExtensions from 'image-extensions';
 
-	export let editor: SvelteEditor;
 	export let element: IImageElement;
-	export let ref: HTMLElement = undefined;
+	export let ref: HTMLElement | undefined;
+	export let dir: 'rtl' | 'ltr';
 
+	const editor = getEditor();
 	const selectedContext = getSelectedContext();
 	const focusedContext = getFocusedContext();
 	const readOnlyContext = getReadOnlyContext();
 
 	$: selected = $readOnlyContext ? false : $selectedContext && $focusedContext;
 	$: path = findPath(element);
-	$: onRemove = () => Transforms.removeNodes(editor, { at: path });
+
+	function onRemove() {
+		Transforms.removeNodes(editor, { at: path });
+	}
 </script>
 
-<div bind:this={ref} {...$$restProps}>
+<div
+	class="container"
+	bind:this={ref}
+	data-slate-node="element"
+	data-slate-inline={$$props['data-slate-inline']}
+	{dir}
+>
 	<slot />
-	<div contentEditable={false} class="image">
+	<div contenteditable={false} class="image">
 		<img src={element.url} alt="" class:selected />
 		<div class="delete" class:selected>
 			<Button onClick={onRemove}>
@@ -104,6 +115,10 @@
 </div>
 
 <style>
+	.container {
+		position: relative;
+		margin: 0;
+	}
 	.image {
 		position: relative;
 	}

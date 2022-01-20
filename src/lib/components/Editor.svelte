@@ -8,7 +8,7 @@
 </script>
 
 <script lang="ts">
-	import { Slate, Editable, withSvelte } from 'svelte-slate';
+	import { Slate, Editable, withSvelte, isHotkey } from 'svelte-slate';
 	import type { Selection } from 'slate';
 	import { createEditor } from 'slate';
 	import { withHistory } from 'slate-history';
@@ -17,10 +17,10 @@
 	import Element from './Element.svelte';
 	import type { IText } from './Leaf.svelte';
 	import Leaf from './Leaf.svelte';
-	import isHotkey from 'is-hotkey';
 	import HoveringToolbar from './HoveringToolbar.svelte';
 	import { longpress } from '$lib/longpress';
 	import { withImages } from './ImageElement.svelte';
+	import { withLatex } from './LatexElement.svelte';
 
 	export let value: Array<IText | IElement> = [
 		{
@@ -34,7 +34,7 @@
 
 	let open = false;
 	let ref: HTMLDivElement;
-	const editor = withHistory(withImages(withSvelte(createEditor())));
+	const editor = withHistory(withLatex(withImages(withSvelte(createEditor()))));
 
 	function onKeyDown(event: KeyboardEvent) {
 		for (const hotkey in HOTKEYS) {

@@ -7,7 +7,12 @@
 		children: (IElement | IText)[];
 	}
 
-	export type IElement = IBaseElement | IImageElement | ICheckListItemElement | ICodeElement;
+	export type IElement =
+		| IBaseElement
+		| IImageElement
+		| ICheckListItemElement
+		| ICodeElement
+		| ILatexElement;
 </script>
 
 <script lang="ts">
@@ -17,32 +22,94 @@
 	import CheckListItemElement, { isCheckListItemElement } from './CheckListItemElement.svelte';
 	import type { ICodeElement } from './CodeElement.svelte';
 	import CodeElement, { isCodeElement } from './CodeElement.svelte';
+	import type { ILatexElement } from './LatexElement.svelte';
+	import LatexElement, { isLatexElement } from './LatexElement.svelte';
 
 	export let element: IElement;
-	export let ref: HTMLElement = undefined;
+	export let ref: HTMLElement | undefined;
+	export let dir: 'rtl' | 'ltr';
+	export let contenteditable: boolean | undefined;
 </script>
 
-{#if element?.type === 'block-quote'}<blockquote bind:this={ref} {...$$restProps}>
+{#if element.type === 'block-quote'}<blockquote
+		bind:this={ref}
+		data-slate-node="element"
+		data-slate-inline={$$props['data-slate-inline']}
+		{dir}
+		{contenteditable}
+	>
 		<slot />
-	</blockquote>{:else if element?.type === 'bulleted-list'}<ul bind:this={ref} {...$$restProps}>
+	</blockquote>{:else if element.type === 'bulleted-list'}<ul
+		bind:this={ref}
+		data-slate-node="element"
+		data-slate-inline={$$props['data-slate-inline']}
+		{dir}
+		{contenteditable}
+	>
 		<slot />
-	</ul>{:else if element?.type === 'heading-one'}<h1 bind:this={ref} {...$$restProps}>
+	</ul>{:else if element.type === 'heading-one'}<h1
+		bind:this={ref}
+		data-slate-node="element"
+		data-slate-inline={$$props['data-slate-inline']}
+		{dir}
+		{contenteditable}
+	>
 		<slot />
-	</h1>{:else if element?.type === 'heading-two'}<h2 bind:this={ref} {...$$restProps}>
+	</h1>{:else if element.type === 'heading-two'}<h2
+		bind:this={ref}
+		data-slate-node="element"
+		data-slate-inline={$$props['data-slate-inline']}
+		{dir}
+		{contenteditable}
+	>
 		<slot />
-	</h2>{:else if element?.type === 'list-item'}<li bind:this={ref} {...$$restProps}>
+	</h2>{:else if element.type === 'list-item'}<li
+		bind:this={ref}
+		data-slate-node="element"
+		data-slate-inline={$$props['data-slate-inline']}
+		{dir}
+		{contenteditable}
+	>
 		<slot />
-	</li>{:else if element?.type === 'numbered-list'}<ol bind:this={ref} {...$$restProps}>
+	</li>{:else if element.type === 'numbered-list'}<ol
+		bind:this={ref}
+		data-slate-node="element"
+		data-slate-inline={$$props['data-slate-inline']}
+		{dir}
+		{contenteditable}
+	>
 		<slot />
-	</ol>{:else if isImageElement(element)}<ImageElement bind:ref {...$$restProps} {element}
-		><slot /></ImageElement
+	</ol>{:else if isImageElement(element)}<ImageElement
+		bind:ref
+		{element}
+		{dir}
+		data-slate-inline={$$props['data-slate-inline']}><slot /></ImageElement
 	>{:else if isCheckListItemElement(element)}<CheckListItemElement
 		bind:ref
-		{...$$restProps}
-		{element}><slot /></CheckListItemElement
-	>{:else if isCodeElement(element)}<CodeElement bind:ref {...$$restProps} {element}
-		><slot /></CodeElement
-	>{:else}<p bind:this={ref} {...$$restProps}><slot /></p>{/if}
+		{element}
+		{dir}
+		{contenteditable}
+		data-slate-inline={$$props['data-slate-inline']}><slot /></CheckListItemElement
+	>{:else if isCodeElement(element)}<CodeElement
+		bind:ref
+		{element}
+		{dir}
+		{contenteditable}
+		data-slate-inline={$$props['data-slate-inline']}><slot /></CodeElement
+	>{:else if isLatexElement(element)}<LatexElement
+		bind:ref
+		{element}
+		{dir}
+		data-slate-inline={$$props['data-slate-inline']}><slot /></LatexElement
+	>{:else}<p
+		bind:this={ref}
+		data-slate-node="element"
+		data-slate-inline={$$props['data-slate-inline']}
+		{dir}
+		{contenteditable}
+	>
+		<slot />
+	</p>{/if}
 
 <style>
 	blockquote,

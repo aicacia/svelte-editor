@@ -8,10 +8,10 @@
 	const editorContext = getEditorContext();
 	$: editor = $editorContext;
 	$: active = isBlockActive(editor, format);
-	$: onClick = (event: MouseEvent) => {
+	function onClick(event: MouseEvent) {
 		event.preventDefault();
 		toggleBlock(editor, format);
-	};
+	}
 </script>
 
 <Button {active} {onClick}>

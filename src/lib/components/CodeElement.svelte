@@ -52,6 +52,8 @@
 
 	export let element: ICodeElement;
 	export let ref: HTMLElement = undefined;
+	export let dir: 'rtl' | 'ltr';
+	export let contenteditable: boolean | undefined;
 
 	const editor = getEditor();
 
@@ -62,7 +64,7 @@
 	$: if (currentLanguage !== element.language) {
 		currentLanguage = element.language;
 	}
-	$: decorate = ([node, path]: NodeEntry): Range[] => {
+	function decorate([node, path]: NodeEntry): Range[] {
 		const ranges = [];
 		if (!Text.isText(node)) {
 			return ranges;
@@ -86,14 +88,17 @@
 		}
 
 		return ranges;
-	};
-	$: decorateContext.set(decorate);
+	}
+	decorateContext.set(decorate);
 </script>
 
-{#if editor.isInline(element)}<span bind:this={ref} {...$$restProps}><slot /></span>{:else}<div
+{#if editor.isInline(element)}<span
 		bind:this={ref}
-		{...$$restProps}
-	>
+		data-slate-node="element"
+		data-slate-inline="true"
+		{dir}
+		{contenteditable}><slot /></span
+	>{:else}<div bind:this={ref} data-slate-node="element" {dir} {contenteditable}>
 		<slot />
 	</div>{/if}
 

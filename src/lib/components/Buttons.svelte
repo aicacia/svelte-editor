@@ -13,6 +13,7 @@
 	import ImageButton from './ImageButton.svelte';
 	import CheckListItemButton from './CheckListItemButton.svelte';
 	import CodeButton from './CodeButton.svelte';
+	import LatexButton from './LatexButton.svelte';
 </script>
 
 <MarkButton format="bold"><MdFormatBold /></MarkButton>
@@ -27,3 +28,4 @@
 <ImageButton />
 <CheckListItemButton />
 <CodeButton />
+<LatexButton />

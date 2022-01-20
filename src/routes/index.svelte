@@ -58,6 +58,12 @@
 					text: 'const fac = (x) => x > 1 ? x * fac(x - 1) : 1;'
 				}
 			]
+		},
+		{
+			type: 'latex',
+			latex:
+				'\\begin{align*} f(x) &= x^{n} \\text{ if } n \\geq 0 \\text{ and } x \\geq 0 \\text{,} \\end{align*}',
+			children: [{ text: '' }]
 		}
 	];
 </script>
