@@ -53,7 +53,7 @@
 	export let element: ICodeElement;
 	export let ref: HTMLElement = undefined;
 	export let dir: 'rtl' | 'ltr';
-	export let contenteditable: boolean | undefined;
+	export let contenteditable: boolean = undefined;
 
 	const editor = getEditor();
 

@@ -4,7 +4,6 @@
 
 	export interface ILatexElement extends IBaseElement {
 		type: 'latex';
-		latex: string;
 	}
 
 	export function isLatexElement(element: IBaseElement): element is ILatexElement {
@@ -19,6 +18,12 @@
 		};
 
 		return editor;
+	}
+
+	export function nodeToString(element: SlateElement | Text): string {
+		return SlateElement.isElement(element)
+			? element.children.map(nodeToString).join(' ')
+			: element.text;
 	}
 
 	export function insertLatex(editor: Editor) {
@@ -37,10 +42,13 @@
 </script>
 
 <script lang="ts">
-	import { DECORATE_CONTEXT_KEY, defaultDecorate } from 'svelte-slate/components/Slate.svelte';
+	import Slate, {
+		DECORATE_CONTEXT_KEY,
+		defaultDecorate
+	} from 'svelte-slate/components/Slate.svelte';
 	import { findPath, SvelteEditor } from 'svelte-slate';
 	import { getEditor } from 'svelte-slate';
-	import { Editor, Transforms, Element as SlateElement } from 'slate';
+	import { Editor, Transforms, Element as SlateElement, Text } from 'slate';
 	import { isBlockActive } from '../utils';
 	import { writable } from 'svelte/store';
 	import { setContext } from 'svelte';
@@ -58,14 +66,12 @@
 	const decorateContext = writable(defaultDecorate);
 	setContext(DECORATE_CONTEXT_KEY, decorateContext);
 
-	let currentLatex = element.latex;
-	$: if (currentLatex !== element.latex) {
-		currentLatex = element.latex;
-	}
+	$: path = findPath(element);
+	$: latex = nodeToString(element);
 
-	let latex: HTMLElement;
-	$: if (latex) {
-		katex.render(currentLatex, latex, {
+	let latexElement: HTMLElement;
+	$: if (latexElement) {
+		katex.render(latex, latexElement, {
 			displayMode: true,
 			output: 'html',
 			throwOnError: false
@@ -73,12 +79,11 @@
 	}
 
 	let editing = false;
-	$: latexValue = currentLatex;
 	function onEdit() {
 		editing = true;
 	}
 	function onChange() {
-		Transforms.setNodes(editor, { latex: latexValue } as any, { at: findPath(element) });
+		Transforms.setNodes(editor, { latex } as any, { at: path });
 		editing = false;
 	}
 </script>
@@ -92,16 +97,16 @@
 >
 	<slot />
 	<div contenteditable={false}>
-		<span bind:this={latex} on:mousedown={onEdit} />
+		<span bind:this={latexElement} on:mousedown={onEdit} />
 	</div>
 </div>
 
 <Modal bind:open={editing}>
 	<div class="body">
 		<div class="latex">
-			<textarea bind:value={latexValue} />
+			<textarea bind:value={latex} />
 			<div class="button">
-				<Button active={!latexValue} onClick={onChange}><MdCheck /></Button>
+				<Button active={!latex} onClick={onChange}><MdCheck /></Button>
 			</div>
 		</div>
 	</div>

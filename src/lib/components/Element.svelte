@@ -26,9 +26,9 @@
 	import LatexElement, { isLatexElement } from './LatexElement.svelte';
 
 	export let element: IElement;
-	export let ref: HTMLElement | undefined;
 	export let dir: 'rtl' | 'ltr';
-	export let contenteditable: boolean | undefined;
+	export let ref: HTMLElement = undefined;
+	export let contenteditable: boolean = undefined;
 </script>
 
 {#if element.type === 'block-quote'}<blockquote
@@ -90,12 +90,8 @@
 		{dir}
 		{contenteditable}
 		data-slate-inline={$$props['data-slate-inline']}><slot /></CheckListItemElement
-	>{:else if isCodeElement(element)}<CodeElement
-		bind:ref
-		{element}
-		{dir}
-		{contenteditable}
-		data-slate-inline={$$props['data-slate-inline']}><slot /></CodeElement
+	>{:else if isCodeElement(element)}<CodeElement bind:ref {element} {dir} {contenteditable}
+		><slot /></CodeElement
 	>{:else if isLatexElement(element)}<LatexElement
 		bind:ref
 		{element}
