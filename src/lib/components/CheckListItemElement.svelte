@@ -68,9 +68,11 @@
 	import { isBlockActive } from '$lib/utils';
 
 	export let element: ICheckListItemElement;
-	export let ref: HTMLElement | undefined;
-	export let dir: 'rtl' | 'ltr';
-	export let contenteditable: boolean | undefined;
+	export let ref: HTMLElement;
+	export let isInline: boolean;
+	export let isVoid: boolean;
+	export let contenteditable: boolean;
+	export let dir: 'rtl' | 'ltr' = undefined;
 
 	const editor = getEditor();
 	const readOnlyContext = getReadOnlyContext();
@@ -91,7 +93,8 @@
 	class="check-list-item"
 	bind:this={ref}
 	data-slate-node="element"
-	data-slate-inline={$$props['data-slate-inline']}
+	data-slate-inline={isInline}
+	data-slate-void={isVoid}
 	{dir}
 	{contenteditable}
 >

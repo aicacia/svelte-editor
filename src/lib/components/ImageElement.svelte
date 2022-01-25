@@ -47,8 +47,7 @@
 	}
 
 	export function insertImage(editor: Editor, url: string | ArrayBuffer) {
-		const text = { text: '' };
-		const image = { type: 'image', url, children: [text] };
+		const image = { type: 'image', url, children: [{ text: '' }] };
 		Transforms.insertNodes(editor, image);
 	}
 
@@ -80,8 +79,11 @@
 	import imageExtensions from 'image-extensions';
 
 	export let element: IImageElement;
-	export let ref: HTMLElement | undefined;
-	export let dir: 'rtl' | 'ltr';
+	export let ref: HTMLElement;
+	export let isInline: boolean;
+	export let isVoid: boolean;
+	export let contenteditable: boolean;
+	export let dir: 'rtl' | 'ltr' = undefined;
 
 	const editor = getEditor();
 	const selectedContext = getSelectedContext();
@@ -100,7 +102,8 @@
 	class="container"
 	bind:this={ref}
 	data-slate-node="element"
-	data-slate-inline={$$props['data-slate-inline']}
+	data-slate-inline={isInline}
+	data-slate-void={isVoid}
 	{dir}
 >
 	<slot />

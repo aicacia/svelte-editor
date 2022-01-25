@@ -38,12 +38,11 @@
 <script lang="ts">
 	import type { Token } from 'prismjs';
 	import Prism from 'prismjs';
-	import 'prismjs/components/prism-python';
-	import 'prismjs/components/prism-php';
-	import 'prismjs/components/prism-sql';
-	import 'prismjs/components/prism-java';
+	import 'prismjs/components/prism-python.js';
+	import 'prismjs/components/prism-php.js';
+	import 'prismjs/components/prism-sql.js';
+	import 'prismjs/components/prism-java.js';
 	import { DECORATE_CONTEXT_KEY, defaultDecorate } from 'svelte-slate/components/Slate.svelte';
-	import { getEditor } from 'svelte-slate';
 	import type { NodeEntry } from 'slate';
 	import { Editor, Transforms, Element as SlateElement, Text, Range } from 'slate';
 	import { isBlockActive } from '$lib/utils';
@@ -51,11 +50,11 @@
 	import { setContext } from 'svelte';
 
 	export let element: ICodeElement;
-	export let ref: HTMLElement = undefined;
-	export let dir: 'rtl' | 'ltr';
-	export let contenteditable: boolean = undefined;
-
-	const editor = getEditor();
+	export let ref: HTMLElement;
+	export let isInline: boolean;
+	export let isVoid: boolean;
+	export let contenteditable: boolean;
+	export let dir: 'rtl' | 'ltr' = undefined;
 
 	const decorateContext = writable(defaultDecorate);
 	setContext(DECORATE_CONTEXT_KEY, decorateContext);
@@ -92,13 +91,20 @@
 	decorateContext.set(decorate);
 </script>
 
-{#if editor.isInline(element)}<span
+{#if isInline}<span
 		bind:this={ref}
 		data-slate-node="element"
-		data-slate-inline="true"
+		data-slate-inline={isInline}
+		data-slate-void={isVoid}
 		{dir}
 		{contenteditable}><slot /></span
-	>{:else}<div bind:this={ref} data-slate-node="element" {dir} {contenteditable}>
+	>{:else}<div
+		bind:this={ref}
+		data-slate-node="element"
+		data-slate-void={isVoid}
+		{dir}
+		{contenteditable}
+	>
 		<slot />
 	</div>{/if}
 

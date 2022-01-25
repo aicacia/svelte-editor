@@ -61,11 +61,9 @@
 		},
 		{
 			type: 'latex',
-			children: [
-				{
-					text: '\\begin{align*} f(x) &= x^{n} \\text{ if } n \\geq 0 \\text{ and } x \\geq 0 \\text{,} \\end{align*}'
-				}
-			]
+			latex:
+				'\\begin{align*} f(x) &= x^{n} \\text{ if } n \\geq 0 \\text{ and } x \\geq 0 \\text{,} \\end{align*}',
+			children: [{ text: '' }]
 		}
 	];
 </script>

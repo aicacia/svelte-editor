@@ -51,9 +51,9 @@
 			Range.isCollapsed(selection) ||
 			Editor.string(editor, selection) === ''
 		) {
-			ref.removeAttribute('style');
+			open = false;
 		} else {
-			repositionElement(ref, container);
+			open = true;
 		}
 	}
 

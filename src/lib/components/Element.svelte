@@ -26,15 +26,18 @@
 	import LatexElement, { isLatexElement } from './LatexElement.svelte';
 
 	export let element: IElement;
-	export let dir: 'rtl' | 'ltr';
-	export let ref: HTMLElement = undefined;
-	export let contenteditable: boolean = undefined;
+	export let ref: HTMLElement;
+	export let isInline: boolean;
+	export let isVoid: boolean;
+	export let contenteditable: boolean;
+	export let dir: 'rtl' | 'ltr' = undefined;
 </script>
 
 {#if element.type === 'block-quote'}<blockquote
 		bind:this={ref}
 		data-slate-node="element"
-		data-slate-inline={$$props['data-slate-inline']}
+		data-slate-inline={isInline}
+		data-slate-void={isVoid}
 		{dir}
 		{contenteditable}
 	>
@@ -42,7 +45,8 @@
 	</blockquote>{:else if element.type === 'bulleted-list'}<ul
 		bind:this={ref}
 		data-slate-node="element"
-		data-slate-inline={$$props['data-slate-inline']}
+		data-slate-inline={isInline}
+		data-slate-void={isVoid}
 		{dir}
 		{contenteditable}
 	>
@@ -50,7 +54,8 @@
 	</ul>{:else if element.type === 'heading-one'}<h1
 		bind:this={ref}
 		data-slate-node="element"
-		data-slate-inline={$$props['data-slate-inline']}
+		data-slate-inline={isInline}
+		data-slate-void={isVoid}
 		{dir}
 		{contenteditable}
 	>
@@ -58,7 +63,8 @@
 	</h1>{:else if element.type === 'heading-two'}<h2
 		bind:this={ref}
 		data-slate-node="element"
-		data-slate-inline={$$props['data-slate-inline']}
+		data-slate-inline={isInline}
+		data-slate-void={isVoid}
 		{dir}
 		{contenteditable}
 	>
@@ -66,7 +72,8 @@
 	</h2>{:else if element.type === 'list-item'}<li
 		bind:this={ref}
 		data-slate-node="element"
-		data-slate-inline={$$props['data-slate-inline']}
+		data-slate-inline={isInline}
+		data-slate-void={isVoid}
 		{dir}
 		{contenteditable}
 	>
@@ -74,7 +81,8 @@
 	</li>{:else if element.type === 'numbered-list'}<ol
 		bind:this={ref}
 		data-slate-node="element"
-		data-slate-inline={$$props['data-slate-inline']}
+		data-slate-inline={isInline}
+		data-slate-void={isVoid}
 		{dir}
 		{contenteditable}
 	>
@@ -83,24 +91,35 @@
 		bind:ref
 		{element}
 		{dir}
-		data-slate-inline={$$props['data-slate-inline']}><slot /></ImageElement
+		{isInline}
+		{isVoid}
+		{contenteditable}><slot /></ImageElement
 	>{:else if isCheckListItemElement(element)}<CheckListItemElement
 		bind:ref
 		{element}
 		{dir}
-		{contenteditable}
-		data-slate-inline={$$props['data-slate-inline']}><slot /></CheckListItemElement
-	>{:else if isCodeElement(element)}<CodeElement bind:ref {element} {dir} {contenteditable}
-		><slot /></CodeElement
+		{isInline}
+		{isVoid}
+		{contenteditable}><slot /></CheckListItemElement
+	>{:else if isCodeElement(element)}<CodeElement
+		bind:ref
+		{element}
+		{dir}
+		{isInline}
+		{isVoid}
+		{contenteditable}><slot /></CodeElement
 	>{:else if isLatexElement(element)}<LatexElement
 		bind:ref
 		{element}
 		{dir}
-		data-slate-inline={$$props['data-slate-inline']}><slot /></LatexElement
+		{isInline}
+		{isVoid}
+		{contenteditable}><slot /></LatexElement
 	>{:else}<p
 		bind:this={ref}
 		data-slate-node="element"
-		data-slate-inline={$$props['data-slate-inline']}
+		data-slate-inline={isInline}
+		data-slate-void={isVoid}
 		{dir}
 		{contenteditable}
 	>
