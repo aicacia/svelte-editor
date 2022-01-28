@@ -1,3 +1,5 @@
+<svelte:options immutable={true} />
+
 <script lang="ts" context="module">
 	import type { IBaseElement, IElement } from './Element.svelte';
 
@@ -10,7 +12,7 @@
 		return element.type === 'check-list-item';
 	}
 
-	export function withCheckListItems<T extends SvelteEditor = SvelteEditor>(editor: T): T {
+	export function withCheckListItems<T extends ISvelteEditor = ISvelteEditor>(editor: T): T {
 		const { deleteBackward } = editor;
 
 		editor.deleteBackward = (...args) => {
@@ -62,8 +64,8 @@
 </script>
 
 <script lang="ts">
-	import { findPath, getReadOnlyContext, getEditor } from 'svelte-slate';
-	import type { SvelteEditor } from 'svelte-slate';
+	import { findPath, getEditor } from 'svelte-slate';
+	import type { ISvelteEditor } from 'svelte-slate';
 	import { Editor, Transforms, Range, Element as SlateElement, Point } from 'slate';
 	import { isBlockActive } from '$lib/utils';
 
@@ -75,9 +77,7 @@
 	export let dir: 'rtl' | 'ltr' = undefined;
 
 	const editor = getEditor();
-	const readOnlyContext = getReadOnlyContext();
 
-	$: readOnly = $readOnlyContext;
 	function onChange(event: Event) {
 		Transforms.setNodes(
 			editor,
@@ -101,7 +101,7 @@
 	<span class="checkbox" contenteditable={false}>
 		<input type="checkbox" checked={element.checked} on:change={onChange} />
 	</span>
-	<span class="content" class:checked={element.checked} contenteditable={!readOnly}>
+	<span class="content" class:checked={element.checked} {contenteditable}>
 		<slot />
 	</span>
 </div>

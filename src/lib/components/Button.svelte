@@ -1,9 +1,11 @@
+<svelte:options immutable={true} />
+
 <script lang="ts">
 	export let active = false;
 	export let onClick: (event: MouseEvent) => void;
 </script>
 
-<button class={$$restProps.class} class:active on:mousedown={onClick}>
+<button class={$$props['class']} class:active on:mousedown={onClick}>
 	<div>
 		<slot />
 	</div>

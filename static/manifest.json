@@ -1,7 +1,7 @@
 {
-	"name": "Aicacia Svelte Slate",
-	"short_name": "Svelte Slate",
-	"description": "Aicacia Svelte Slate",
+	"name": "Aicacia Svelte Editor",
+	"short_name": "Svelte Editor",
+	"description": "Aicacia Svelte Editor",
 	"version": "1.0",
 	"manifest_version": 3,
 	"icons": [

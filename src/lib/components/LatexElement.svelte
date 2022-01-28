@@ -1,3 +1,5 @@
+<svelte:options immutable={true} />
+
 <script lang="ts" context="module">
 	import 'katex/dist/katex.min.css';
 	import type { IBaseElement } from './Element.svelte';
@@ -12,7 +14,7 @@
 		return element.type === 'latex';
 	}
 
-	export function withLatex<T extends SvelteEditor = SvelteEditor>(editor: T): T {
+	export function withLatex<T extends ISvelteEditor = ISvelteEditor>(editor: T): T {
 		const { isVoid } = editor;
 
 		editor.isVoid = (element) => {
@@ -23,19 +25,21 @@
 	}
 
 	export function insertLatex(editor: Editor) {
-		const image = { type: 'latex', latex: '', inline: true, children: [{ text: '' }] };
+		const image = { type: 'latex', latex: '', inline: true, children: [{ text: ' ' }] };
 		Transforms.insertNodes(editor, image);
 	}
 </script>
 
 <script lang="ts">
 	import { DECORATE_CONTEXT_KEY, defaultDecorate } from 'svelte-slate/components/Slate.svelte';
-	import { findPath, SvelteEditor } from 'svelte-slate';
+	import type { ISvelteEditor } from 'svelte-slate';
+	import { findPath } from 'svelte-slate';
 	import { getEditor } from 'svelte-slate';
 	import { Editor, Transforms } from 'slate';
 	import { writable } from 'svelte/store';
 	import { setContext } from 'svelte';
 	import MdCheck from 'svelte-icons/md/MdCheck.svelte';
+	import MdDeleteForever from 'svelte-icons/md/MdDeleteForever.svelte';
 	import MdFormatIndentIncrease from 'svelte-icons/md/MdFormatIndentIncrease.svelte';
 	import Button from './Button.svelte';
 	import katex from 'katex';
@@ -65,11 +69,15 @@
 
 	let latexElement: HTMLElement;
 	$: if (latexElement) {
-		katex.render(currentLatex, latexElement, {
-			displayMode: !currentInline,
-			output: 'html',
-			throwOnError: false
-		});
+		if (currentLatex) {
+			katex.render(currentLatex, latexElement, {
+				displayMode: !currentInline,
+				output: 'html',
+				throwOnError: false
+			});
+		} else if (contenteditable) {
+			latexElement.innerHTML = 'Click to Edit LaTeX';
+		}
 	}
 
 	let editing = false;
@@ -80,13 +88,16 @@
 		inline = currentInline;
 		editing = true;
 	}
-	function onLatexChange() {
+	$: onLatexChange = () => {
 		Transforms.setNodes(editor, { latex, inline } as any, { at: path });
 		editing = false;
-	}
+	};
 	function onInlineChange() {
 		inline = !inline;
 	}
+	$: onDelete = () => {
+		Transforms.delete(editor, { at: path });
+	};
 
 	let latexDisplayElement: HTMLElement;
 	$: if (editing && latexDisplayElement) {
@@ -106,10 +117,10 @@
 	data-slate-inline={isInline}
 	data-slate-void={isVoid}
 	{dir}
+	{contenteditable}
 >
-	<div contenteditable={false}>
-		<span bind:this={latexElement} on:mousedown={onEdit} />
-	</div>
+	<slot />
+	<div contenteditable={false}><span bind:this={latexElement} on:mousedown={onEdit} /></div>
 </div>
 
 <Modal bind:open={editing}>
@@ -123,13 +134,20 @@
 					<span bind:this={latexDisplayElement} />
 				</div>
 			</div>
-			<div class="button">
-				<Button active={!latex} onClick={onLatexChange}><MdCheck /></Button>
-				<Button active={!inline} onClick={onInlineChange}><MdFormatIndentIncrease /></Button>
+			<div class="buttons">
+				<div>
+					<Button active={!latex} onClick={onLatexChange}><MdCheck /></Button>
+				</div>
+				<div>
+					<Button onClick={onDelete}><MdDeleteForever /></Button>
+				</div>
+				<div>
+					<Button active={!inline} onClick={onInlineChange}><MdFormatIndentIncrease /></Button>
+				</div>
 			</div>
 		</div>
-	</div>
-</Modal>
+	</div></Modal
+>
 
 <style>
 	.container {
@@ -150,6 +168,7 @@
 		flex-direction: column;
 	}
 	.button {
+		flex-direction: row;
 		flex-grow: 0;
 	}
 	textarea {

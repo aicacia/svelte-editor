@@ -1,3 +1,5 @@
+<svelte:options immutable={true} />
+
 <script lang="ts" context="module">
 	import type { IBaseElement } from './Element.svelte';
 
@@ -10,7 +12,7 @@
 		return element.type === 'image';
 	}
 
-	export function withImages<T extends SvelteEditor = SvelteEditor>(editor: T): T {
+	export function withImages<T extends ISvelteEditor = ISvelteEditor>(editor: T): T {
 		const { insertData, isVoid } = editor;
 
 		editor.isVoid = (element) => {
@@ -71,7 +73,7 @@
 		getReadOnlyContext,
 		getSelectedContext
 	} from 'svelte-slate';
-	import type { SvelteEditor } from 'svelte-slate';
+	import type { ISvelteEditor } from 'svelte-slate';
 	import { Editor, Transforms } from 'slate';
 	import { Button } from '$lib';
 	import MdDelete from 'svelte-icons/md/MdDelete.svelte';
@@ -105,15 +107,12 @@
 	data-slate-inline={isInline}
 	data-slate-void={isVoid}
 	{dir}
+	contenteditable={false}
 >
 	<slot />
 	<div contenteditable={false} class="image">
 		<img src={element.url} alt="" class:selected />
-		<div class="delete" class:selected>
-			<Button onClick={onRemove}>
-				<MdDelete />
-			</Button>
-		</div>
+		<div class="delete" class:selected><Button onClick={onRemove}><MdDelete /></Button></div>
 	</div>
 </div>
 

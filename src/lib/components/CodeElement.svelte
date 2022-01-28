@@ -1,3 +1,5 @@
+<svelte:options immutable={true} />
+
 <script lang="ts" context="module">
 	import type { IBaseElement } from './Element.svelte';
 
@@ -42,7 +44,7 @@
 	import 'prismjs/components/prism-php.js';
 	import 'prismjs/components/prism-sql.js';
 	import 'prismjs/components/prism-java.js';
-	import { DECORATE_CONTEXT_KEY, defaultDecorate } from 'svelte-slate/components/Slate.svelte';
+	import { DECORATE_CONTEXT_KEY, defaultDecorate } from 'svelte-slate';
 	import type { NodeEntry } from 'slate';
 	import { Editor, Transforms, Element as SlateElement, Text, Range } from 'slate';
 	import { isBlockActive } from '$lib/utils';

@@ -1,7 +1,6 @@
-<script lang="ts" context="module">
-	import type { IText } from './Leaf.svelte';
-	import type { IImageElement } from './ImageElement.svelte';
+<svelte:options immutable={true} />
 
+<script lang="ts" context="module">
 	export interface IBaseElement {
 		type: string;
 		children: (IElement | IText)[];
@@ -18,12 +17,14 @@
 <script lang="ts">
 	import { isImageElement } from './ImageElement.svelte';
 	import ImageElement from './ImageElement.svelte';
+	import type { IImageElement } from './ImageElement.svelte';
 	import type { ICheckListItemElement } from './CheckListItemElement.svelte';
 	import CheckListItemElement, { isCheckListItemElement } from './CheckListItemElement.svelte';
 	import type { ICodeElement } from './CodeElement.svelte';
 	import CodeElement, { isCodeElement } from './CodeElement.svelte';
 	import type { ILatexElement } from './LatexElement.svelte';
 	import LatexElement, { isLatexElement } from './LatexElement.svelte';
+	import type { IText } from './Leaf.svelte';
 
 	export let element: IElement;
 	export let ref: HTMLElement;
@@ -90,30 +91,30 @@
 	</ol>{:else if isImageElement(element)}<ImageElement
 		bind:ref
 		{element}
-		{dir}
 		{isInline}
 		{isVoid}
+		{dir}
 		{contenteditable}><slot /></ImageElement
 	>{:else if isCheckListItemElement(element)}<CheckListItemElement
 		bind:ref
 		{element}
-		{dir}
 		{isInline}
 		{isVoid}
+		{dir}
 		{contenteditable}><slot /></CheckListItemElement
 	>{:else if isCodeElement(element)}<CodeElement
 		bind:ref
 		{element}
-		{dir}
 		{isInline}
 		{isVoid}
+		{dir}
 		{contenteditable}><slot /></CodeElement
 	>{:else if isLatexElement(element)}<LatexElement
 		bind:ref
 		{element}
-		{dir}
 		{isInline}
 		{isVoid}
+		{dir}
 		{contenteditable}><slot /></LatexElement
 	>{:else}<p
 		bind:this={ref}
@@ -136,6 +137,9 @@
 	p {
 		position: relative;
 		margin: 0;
+	}
+	p {
+		display: inline-block;
 	}
 
 	blockquote {

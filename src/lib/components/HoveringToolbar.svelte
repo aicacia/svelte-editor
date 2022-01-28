@@ -1,3 +1,5 @@
+<svelte:options immutable={true} />
+
 <script lang="ts" context="module">
 	function repositionElement(ref: HTMLElement, container: HTMLElement, retired = 2) {
 		const domSelection = window.getSelection();
